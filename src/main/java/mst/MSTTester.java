@@ -18,12 +18,14 @@ public class MSTTester {
         this.mapper = new ObjectMapper();
     }
 
-    public void testGraphs(String inputFile, String outputFile) throws IOException {
+    public void testAllGraphs(String inputFile, String outputFile) throws IOException {
         List<Graph> graphs = GraphLoader.loadGraphsFromFile(inputFile);
         ArrayNode results = mapper.createArrayNode();
 
         for (int i = 0; i < graphs.size(); i++) {
             Graph graph = graphs.get(i);
+            System.out.println("Testing Graph " + (i + 1) + " - Vertices: " +
+                    graph.getVertexCount() + ", Edges: " + graph.getEdgeCount());
 
             MSTResult primResult = prim.findMST(graph);
             MSTResult kruskalResult = kruskal.findMST(graph);
@@ -61,6 +63,43 @@ public class MSTTester {
 
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFile), output);
         System.out.println("Results saved to: " + outputFile);
+    }
+
+    public void generateCSVSummary(String inputFile, String outputFile) throws IOException {
+        List<Graph> graphs = GraphLoader.loadGraphsFromFile(inputFile);
+        List<String[]> csvData = new ArrayList<>();
+        csvData.add(new String[]{
+                "GraphId", "Vertices", "Edges",
+                "PrimCost", "KruskalCost", "PrimTime(ms)", "KruskalTime(ms)",
+                "PrimOperations", "KruskalOperations"
+        });
+
+        for (int i = 0; i < graphs.size(); i++) {
+            Graph graph = graphs.get(i);
+            MSTResult primResult = prim.findMST(graph);
+            MSTResult kruskalResult = kruskal.findMST(graph);
+
+            csvData.add(new String[]{
+                    String.valueOf(i + 1),
+                    String.valueOf(graph.getVertexCount()),
+                    String.valueOf(graph.getEdgeCount()),
+                    String.valueOf(primResult.getTotalCost()),
+                    String.valueOf(kruskalResult.getTotalCost()),
+                    String.format("%.2f", primResult.getExecutionTimeMs()),
+                    String.format("%.2f", kruskalResult.getExecutionTimeMs()),
+                    String.valueOf(primResult.getOperationsCount()),
+                    String.valueOf(kruskalResult.getOperationsCount())
+            });
+        }
+
+        // Write CSV
+        try (var writer = new java.io.FileWriter(outputFile)) {
+            for (String[] row : csvData) {
+                writer.write(String.join(",", row) + "\n");
+            }
+        }
+
+        System.out.println("CSV summary saved to: " + outputFile);
     }
 
     private ArrayNode createEdgesArray(List<Graph.Edge> edges) {
