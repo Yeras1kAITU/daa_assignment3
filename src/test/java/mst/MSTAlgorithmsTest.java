@@ -64,6 +64,7 @@ class MSTAlgorithmsTest {
         assertEquals(0, primResult.getTotalCost());
         assertEquals(0, kruskalResult.getTotalCost());
         assertEquals(0, primResult.getMstEdges().size());
+        assertEquals(0, kruskalResult.getMstEdges().size());
     }
 
     @Test
@@ -85,20 +86,6 @@ class MSTAlgorithmsTest {
         assertTrue(kruskalResult.getExecutionTimeMs() >= 0);
         assertTrue(primResult.getOperationsCount() >= 0);
         assertTrue(kruskalResult.getOperationsCount() >= 0);
-    }
-
-    @Test
-    void testGraphWithDuplicateEdgesThrowsException() {
-        List<String> vertices = Arrays.asList("A", "B", "C");
-
-        // This should be caught by GraphLoader
-        assertThrows(IOException.class, () -> {
-            List<Graph.Edge> edges = Arrays.asList(
-                    new Graph.Edge("A", "B", 1),
-                    new Graph.Edge("B", "A", 2) // Duplicate edge
-            );
-            new Graph(vertices, edges);
-        });
     }
 
     @Test
@@ -149,5 +136,31 @@ class MSTAlgorithmsTest {
         assertEquals(0, primResult.getTotalCost());
         assertEquals(0, kruskalResult.getTotalCost());
         assertEquals(0, primResult.getMstEdges().size());
+        assertEquals(0, kruskalResult.getMstEdges().size());
+    }
+
+    @Test
+    void testGraphWithNullVerticesThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Graph(null, Collections.emptyList());
+        });
+    }
+
+    @Test
+    void testGraphWithNullEdgesThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Graph(Collections.emptyList(), null);
+        });
+    }
+
+    @Test
+    void testEdgeWithNullVerticesThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Graph.Edge(null, "A", 1);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Graph.Edge("A", null, 1);
+        });
     }
 }

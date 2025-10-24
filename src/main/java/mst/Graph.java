@@ -11,9 +11,24 @@ public class Graph {
         if (vertices == null || edges == null) {
             throw new IllegalArgumentException("Vertices and edges cannot be null");
         }
-        this.vertices = vertices;
-        this.edges = edges;
+        this.vertices = new ArrayList<>(vertices);
+        this.edges = new ArrayList<>(edges);
+
+        // Validate that all edges reference existing vertices
+        validateEdges();
         this.adjacencyList = buildAdjacencyList();
+    }
+
+    private void validateEdges() {
+        Set<String> vertexSet = new HashSet<>(vertices);
+        for (Edge edge : edges) {
+            if (!vertexSet.contains(edge.from)) {
+                throw new IllegalArgumentException("Vertex '" + edge.from + "' in edge does not exist in graph vertices");
+            }
+            if (!vertexSet.contains(edge.to)) {
+                throw new IllegalArgumentException("Vertex '" + edge.to + "' in edge does not exist in graph vertices");
+            }
+        }
     }
 
     public List<String> getVertices() { return vertices; }
@@ -55,6 +70,21 @@ public class Graph {
         @Override
         public String toString() {
             return from + "-" + to + "(" + weight + ")";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Edge edge = (Edge) o;
+            return weight == edge.weight &&
+                    Objects.equals(from, edge.from) &&
+                    Objects.equals(to, edge.to);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(from, to, weight);
         }
     }
 }
