@@ -12,17 +12,17 @@ public class Main {
 
             // Test all graph categories
             String[] graphFiles = {
-                    "src/main/java/graphs/small_dense_graphs.json",
-                    "src/main/java/graphs/medium_dense_graphs.json",
-                    "src/main/java/graphs/large_dense_graphs.json",
-                    "src/main/java/graphs/extra_large_dense_graphs.json"
+                    "graphs/small_dense_graphs.json",
+                    "graphs/medium_dense_graphs.json",
+                    "graphs/large_dense_graphs.json",
+                    "graphs/extra_large_dense_graphs.json"
             };
 
             String[] outputFiles = {
-                    "src/main/java/results/small_results.json",
-                    "src/main/java/results/medium_results.json",
-                    "src/main/java/results/large_results.json",
-                    "src/main/java/results/extra_large_results.json"
+                    "results/small_results.json",
+                    "results/medium_results.json",
+                    "results/large_results.json",
+                    "results/extra_large_results.json"
             };
 
             // Ensure results directory exists

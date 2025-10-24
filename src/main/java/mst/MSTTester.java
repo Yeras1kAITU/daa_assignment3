@@ -30,6 +30,11 @@ public class MSTTester {
             MSTResult primResult = prim.findMST(graph);
             MSTResult kruskalResult = kruskal.findMST(graph);
 
+            // DEBUG: Print actual times before saving
+            System.out.printf("ACTUAL TIMES - Prim: %.2fms, Kruskal: %.2fms%n",
+                    primResult.getExecutionTimeMs(), kruskalResult.getExecutionTimeMs());
+
+
             ObjectNode resultNode = mapper.createObjectNode();
             resultNode.put("graph_id", i + 1);
 
@@ -81,10 +86,19 @@ public class MSTTester {
                 "PrimOperations", "KruskalOperations"
         });
 
+        // Create NEW instances to avoid any caching
+        PrimMST freshPrim = new PrimMST();
+        KruskalMST freshKruskal = new KruskalMST();
+
         for (int i = 0; i < graphs.size(); i++) {
             Graph graph = graphs.get(i);
-            MSTResult primResult = prim.findMST(graph);
-            MSTResult kruskalResult = kruskal.findMST(graph);
+
+            System.out.printf("CSV Generation - Testing Graph %d: ", i + 1);
+            MSTResult primResult = freshPrim.findMST(graph);
+            MSTResult kruskalResult = freshKruskal.findMST(graph);
+
+            System.out.printf("Prim: %.2fms, Kruskal: %.2fms%n",
+                    primResult.getExecutionTimeMs(), kruskalResult.getExecutionTimeMs());
 
             csvData.add(new String[]{
                     String.valueOf(i + 1),
@@ -99,15 +113,8 @@ public class MSTTester {
             });
         }
 
-        // Ensure directory exists
-        File outputFileObj = new File(outputFile);
-        File parentDir = outputFileObj.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
-        }
-
         // Write CSV
-        try (var writer = new java.io.FileWriter(outputFileObj)) {
+        try (var writer = new java.io.FileWriter(outputFile)) {
             for (String[] row : csvData) {
                 writer.write(String.join(",", row) + "\n");
             }
