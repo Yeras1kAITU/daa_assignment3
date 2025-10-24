@@ -61,8 +61,15 @@ public class MSTTester {
         ObjectNode output = mapper.createObjectNode();
         output.set("results", results);
 
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFile), output);
-        System.out.println("Results saved to: " + outputFile);
+        // Ensure directory exists
+        File outputFileObj = new File(outputFile);
+        File parentDir = outputFileObj.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
+        mapper.writerWithDefaultPrettyPrinter().writeValue(outputFileObj, output);
+        System.out.println("✓ Results saved to: " + outputFile);
     }
 
     public void generateCSVSummary(String inputFile, String outputFile) throws IOException {
@@ -92,14 +99,21 @@ public class MSTTester {
             });
         }
 
+        // Ensure directory exists
+        File outputFileObj = new File(outputFile);
+        File parentDir = outputFileObj.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
         // Write CSV
-        try (var writer = new java.io.FileWriter(outputFile)) {
+        try (var writer = new java.io.FileWriter(outputFileObj)) {
             for (String[] row : csvData) {
                 writer.write(String.join(",", row) + "\n");
             }
         }
 
-        System.out.println("CSV summary saved to: " + outputFile);
+        System.out.println("✓ CSV summary saved to: " + outputFile);
     }
 
     private ArrayNode createEdgesArray(List<Graph.Edge> edges) {
