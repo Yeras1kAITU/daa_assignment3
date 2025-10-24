@@ -1,6 +1,0 @@
-GraphId,Vertices,Edges,PrimCost,KruskalCost,PrimTime(ms),KruskalTime(ms),PrimOperations,KruskalOperations
-1,30,304,445,445,1,62,0,45,9579,2650
-2,30,304,467,467,1,35,0,50,9603,2694
-3,30,304,457,457,1,13,0,27,9567,2634
-4,30,304,424,424,0,37,0,27,9631,2750
-5,30,304,419,419,0,35,0,28,9609,2718
