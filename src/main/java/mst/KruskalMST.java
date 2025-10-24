@@ -3,15 +3,16 @@ package mst;
 import java.util.*;
 
 public class KruskalMST {
+    private int operationsCount;
 
     public MSTResult findMST(Graph graph) {
+        operationsCount = 0;
         long startTime = System.nanoTime();
-        int operationsCount = 0;
 
         List<Graph.Edge> mstEdges = new ArrayList<>();
         List<Graph.Edge> sortedEdges = new ArrayList<>(graph.getEdges());
 
-        // Sort edges by weight
+        // Sort edges by weight (count operations for sorting)
         sortedEdges.sort(Comparator.comparingInt(e -> e.weight));
         operationsCount += sortedEdges.size() * (int)(Math.log(sortedEdges.size()) / Math.log(2));
 
